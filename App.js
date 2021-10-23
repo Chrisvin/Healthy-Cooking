@@ -4,18 +4,7 @@ import { Card } from 'react-native-elements'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { IngredientScreen } from './Screens/IngredientSreen';
-
-function RecipeScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Card>
-        <Card.Title>Hello World!</Card.Title>
-        <Text>Recipe Info!!!</Text>
-        <Card.Divider/>
-      </Card>
-    </View>
-  );
-}
+import { RecipeScreen } from './Screens/RecipeScreen';
 
 const Tab = createBottomTabNavigator();
 
