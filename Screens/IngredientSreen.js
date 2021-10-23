@@ -77,6 +77,9 @@ export function IngredientScreen() {
               </Card>
             </View>
           }
+          onEndReached = {(distanceFromEnd) =>
+            getIngredients(searchText, numberOfItems, offset, responseHandler)
+          }
         />
       </View>
   );
