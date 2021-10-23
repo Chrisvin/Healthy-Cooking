@@ -3,6 +3,7 @@ import  { useState, useEffect } from 'react';
 import { Text, FlatList, View, Image, Dimensions } from 'react-native';
 import { Card, SearchBar } from 'react-native-elements'
 import { getRecipes } from '../API/RecipeAPI';
+import { uniq } from 'lodash';
 
 const windowWidth = Dimensions.get('window').width;
 const numberOfItems = 15;
@@ -26,6 +27,7 @@ export function RecipeScreen() {
         recipe_information:responseJson.results[i].summary
       });
     }
+    recipes = uniq(recipes);
     
     console.log("Original Recipe List:", responseJson);
 
