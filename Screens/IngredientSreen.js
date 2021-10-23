@@ -1,6 +1,6 @@
 import * as React from 'react';
 import  { useState, useEffect } from 'react';
-import { Text, FlatList, View, Image, Dimensions } from 'react-native';
+import { Text, FlatList, View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { Card, SearchBar } from 'react-native-elements'
 import { getIngredients } from '../API/IngredientAPI';
 
@@ -11,7 +11,7 @@ const ingredients = [
     // {id: 2, name: 'Ipsum', img_url: 'https://picsum.photos/201/201', aisle:'something or the other'},
 ];
 
-export function IngredientScreen() {
+export function IngredientScreen({ navigation }) {
   const [searchText, setSearchText] = useState("");
   const [ingredientData, setData] = useState(ingredients);
   const [offset, setOffet] = useState(0);
@@ -63,19 +63,23 @@ export function IngredientScreen() {
           keyExtractor = {item => item.id}
           renderItem = {
             ({item}) => 
-            <View style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}>
-              <Card style={{flex: 1}}>
-                <View style={{flex:1, flexDirection: "row"}}>
-                <Image style={{flex:2, resizeMode:"contain"}} source={{uri: item.img_url}}/>
-                    <View style={{flex:1, flexDirection: "column"}}>
-                        <Card.Title>{item.name}</Card.Title>
-                        <Card.Divider/>
-                        <Text style={{paddingHorizontal:12, fontWeight: "500", flex:1}}>Product Type</Text>
-                        <Text style={{padding:12, flex:1, numberOfLines:2, ellipsizeMode:'tail'}}>{item.aisle}</Text>
-                    </View>
-                </View>
-              </Card>
-            </View>
+            <TouchableOpacity
+              style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}
+              onPress={() => navigation.navigate('IngredientDetailsScreen', {itemID: item.id})}> 
+              <View>
+                <Card style={{flex: 1}}>
+                  <View style={{flex:1, flexDirection: "row"}}>
+                  <Image style={{flex:2, resizeMode:"contain"}} source={{uri: item.img_url}}/>
+                      <View style={{flex:1, flexDirection: "column"}}>
+                          <Card.Title>{item.name}</Card.Title>
+                          <Card.Divider/>
+                          <Text style={{paddingHorizontal:12, fontWeight: "500", flex:1}}>Product Type</Text>
+                          <Text style={{padding:12, flex:1, numberOfLines:2, ellipsizeMode:'tail'}}>{item.aisle}</Text>
+                      </View>
+                  </View>
+                </Card>
+              </View>
+            </TouchableOpacity>
           }
           onEndReached = {(distanceFromEnd) =>
             getIngredients(searchText, numberOfItems, offset, responseHandler)

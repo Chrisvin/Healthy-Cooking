@@ -1,6 +1,6 @@
 import * as React from 'react';
 import  { useState, useEffect } from 'react';
-import { Text, FlatList, View, Image, Dimensions } from 'react-native';
+import { Text, FlatList, View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { Card, SearchBar } from 'react-native-elements'
 import { getRecipes } from '../API/RecipeAPI';
 import { uniq } from 'lodash';
@@ -12,7 +12,7 @@ const recipes = [
     // {id: 2, name: 'Ipsum', img_url: 'https://picsum.photos/201/201', aisle:'something or the other'},
 ];
 
-export function RecipeScreen() {
+export function RecipeScreen({ navigation }) {
   const [searchText, setSearchText] = useState("");
   const [recipeData, setData] = useState(recipes);
   const [offset, setOffet] = useState(0);
@@ -65,17 +65,21 @@ export function RecipeScreen() {
           keyExtractor = {item => item.id}
           renderItem = {
             ({item}) => 
-            <View style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}>
-              <Card style={{flex: 1}}>
-                <View style={{flex:1, flexDirection: "row"}}>
-                <Image style={{flex:3, resizeMode:"contain"}} source={{uri: item.img_url}}/>
-                <View style={{flex:3, flexDirection: "column"}}>
-                    <Card.Title style={{flex:1}}>{item.name}</Card.Title>
-                    <Text style={{flex:2, paddingHorizontal:8}} numberOfLines={4} ellipsizeMod={'tail'}>{item.recipe_information}</Text>
+            <TouchableOpacity
+              style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}
+              onPress={() => navigation.navigate('RecipeDetailsScreen', {itemID: item.id})}> 
+              <View>
+                <Card style={{flex: 1}}>
+                    <View style={{flex:1, flexDirection: "row"}}>
+                    <Image style={{flex:3, resizeMode:"contain"}} source={{uri: item.img_url}}/>
+                    <View style={{flex:3, flexDirection: "column"}}>
+                        <Card.Title style={{flex:1}}>{item.name}</Card.Title>
+                        <Text style={{flex:2, paddingHorizontal:8}} numberOfLines={4} ellipsizeMod={'tail'}>{item.recipe_information}</Text>
+                    </View>
+                    </View>
+                </Card>
                 </View>
-                </View>
-              </Card>
-            </View>
+            </TouchableOpacity>
           }
           onEndReached = {(distanceFromEnd) =>
             getRecipes(searchText, numberOfItems, offset, responseHandler)
