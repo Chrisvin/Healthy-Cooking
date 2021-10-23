@@ -1,52 +1,55 @@
 import * as React from 'react';
 import  { useState, useEffect } from 'react';
-import { Text, StyleSheet, FlatList, View, Image, Dimensions } from 'react-native';
+import { Text, FlatList, View, Image, Dimensions } from 'react-native';
 import { Card, SearchBar } from 'react-native-elements'
-import { SPOONACULAR_API_KEY } from '../Constants';
+import { getIngredients } from '../API/IngredientAPI';
 
 const windowWidth = Dimensions.get('window').width;
-
+const numberOfItems = 25;
 const ingredients = [
-    // {name: 'Lorem', img_url: 'https://picsum.photos/200/200', aisle:'something or the other'},
-    // {name: 'Ipsum', img_url: 'https://picsum.photos/201/201', aisle:'something or the other'},
+    // {id: 1, name: 'Lorem', img_url: 'https://picsum.photos/200/200', aisle:'something or the other'},
+    // {id: 2, name: 'Ipsum', img_url: 'https://picsum.photos/201/201', aisle:'something or the other'},
 ];
 
 export function IngredientScreen() {
   const [searchText, setSearchText] = useState("");
   const [ingredientData, setData] = useState(ingredients);
+  const [offset, setOffet] = useState(0);
 
-  const getIngredients = async (query) => {
-    fetch(`https://api.spoonacular.com/food/ingredients/search?apiKey=${SPOONACULAR_API_KEY}&query=${query.length>0 ? query : 'a'}&number=10&metaInformation=true`)
-      .then(response => response.json())
-      .then(responseJson => {
-          for (let i=0; i<responseJson.number; i++) {
-              ingredients.push({
-                  name:responseJson.results[i].name,
-                  img_url:`https://spoonacular.com/cdn/ingredients_250x250/`+responseJson.results[i].image,
-                  aisle:responseJson.results[i].aisle
-                });
-          }
-          
-          console.log("Response:", ingredients);
-          
-          setData(ingredients);
+  const responseHandler = (responseJson, text) => {
+    setOffet(offset + responseJson.results.length);
+    for (let i=0; i<responseJson.results.length; i++) {
+      ingredients.push({
+        id: responseJson.results[i].id,
+        name:responseJson.results[i].name,
+        img_url:`https://spoonacular.com/cdn/ingredients_250x250/`+responseJson.results[i].image,
+        aisle:responseJson.results[i].aisle
+      });
+    }
+    
+    console.log("Original Ingredient List:", ingredients);
+
+    const updatedIngredients = [... new Set(
+      ingredients.filter(function(item) {
+        // console.log(item.name," - ",text," = ",item.name.startsWith(text));
+        return item.name.startsWith(text);
       })
-      .catch((error) => {
-          console.error(error);
-      });;
+    )];
+
+    console.log("Filtered Ingredient List:", updatedIngredients);
+    
+    setData(updatedIngredients)
   }
-
-  useEffect(() => {
-      getIngredients(searchText);
-  }, []);
-
+  
   const updateSearch = (text) => {
     setSearchText(text);
-    setData(ingredients.filter(function(item) {
-        return item.name.startsWith(text);
-    }))
+    getIngredients(text, numberOfItems, offset, responseHandler);
     // console.log("Search Text = ", text);
-  };  
+  };
+
+  useEffect(() => {
+    getIngredients(searchText, numberOfItems, offset, responseHandler);
+  }, []);
 
   return (
       <View style={{flex:1}}>
@@ -57,6 +60,7 @@ export function IngredientScreen() {
         <FlatList
           data={ingredientData}
           numColumns = {windowWidth > 600 ? (windowWidth > 900 ? 3 : 2) : 1}
+          keyExtractor = {item => item.id}
           renderItem = {
             ({item}) => 
             <View style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}>
