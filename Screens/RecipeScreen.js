@@ -3,14 +3,10 @@ import  { useState, useEffect } from 'react';
 import { Text, FlatList, View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { Card, SearchBar } from 'react-native-elements'
 import { getRecipes } from '../API/RecipeAPI';
-import { uniq } from 'lodash';
 
 const windowWidth = Dimensions.get('window').width;
 const numberOfItems = 15;
-const recipes = [
-    // {id: 1, name: 'Lorem', img_url: 'https://picsum.photos/200/200', aisle:'something or the other'},
-    // {id: 2, name: 'Ipsum', img_url: 'https://picsum.photos/201/201', aisle:'something or the other'},
-];
+const recipes = [];
 
 export function RecipeScreen({ navigation }) {
   const [searchText, setSearchText] = useState("");
@@ -27,13 +23,11 @@ export function RecipeScreen({ navigation }) {
         recipe_information:responseJson.results[i].summary
       });
     }
-    recipes = uniq(recipes);
-    
+
     console.log("Original Recipe List:", responseJson);
 
     const updatedRecipes = [... new Set(
         recipes.filter(function(item) {
-        // console.log(item.name," - ",text," = ",item.name.startsWith(text));
         return item.name.startsWith(text);
       })
     )];
@@ -46,7 +40,6 @@ export function RecipeScreen({ navigation }) {
   const updateSearch = (text) => {
     setSearchText(text);
     getRecipes(text, numberOfItems, offset, responseHandler);
-    // console.log("Search Text = ", text);
   };
 
   useEffect(() => {
@@ -84,9 +77,6 @@ export function RecipeScreen({ navigation }) {
           onEndReached = {(distanceFromEnd) =>
             getRecipes(searchText, numberOfItems, offset, responseHandler)
           }
-          // onRefresh = {
-          //   getRecipes(searchText, numberOfItems, 0, responseHandler)
-          // }
         />
       </View>
   );
