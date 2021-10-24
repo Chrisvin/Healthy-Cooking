@@ -30,7 +30,7 @@ export function RecipeScreen({ navigation }) {
     console.log("Original Recipe List:", responseJson);
 
     const updatedRecipes = recipes.filter(function(item) {
-      return item.name.startsWith(text);
+      return item.name.includes(text);
     });
 
     console.log("Filtered Recipe List:", updatedRecipes);

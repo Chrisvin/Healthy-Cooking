@@ -30,7 +30,7 @@ export function IngredientScreen({ navigation }) {
     console.log("Original Ingredient List:", ingredients);
 
     const updatedIngredients = ingredients.filter(function(item) {
-      return item.name.startsWith(text);
+      return item.name.includes(text);
     });
 
     console.log("Filtered Ingredient List:", updatedIngredients);
