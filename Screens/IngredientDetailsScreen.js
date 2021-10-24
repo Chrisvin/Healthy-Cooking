@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import  { useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, Button, Linking, Platform } from 'react-native';
 import { getIngredientInformation } from '../API/IngredientAPI';
 
 export default function IngredientDetailsScreen({ route, navigation }) {
@@ -23,5 +23,16 @@ export default function IngredientDetailsScreen({ route, navigation }) {
     return <View>
         <Text style={{fontWeight:"bold", padding:12}}>Details about the ingredient with id: ${itemID}</Text>
         <Text style={{paddingHorizontal:12}}><pre>Details about the ingredient with id: ${ingredientDetails}</pre></Text>
+        <Button title="Buy from Amazon" onPress={
+            () => {
+                console.log(ingredientDetails, "\n ==> ", JSON.parse(ingredientDetails).name);
+                const url = "https://www.amazon.in/s?k="+JSON.parse(ingredientDetails).name
+                if(Platform.OS == 'web'){
+                    window.open(url, '_blank');
+                } else {
+                    Linking.openURL(url);
+                }
+            }
+        } />
     </View>
 }
