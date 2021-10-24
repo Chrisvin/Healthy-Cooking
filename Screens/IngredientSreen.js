@@ -6,10 +6,8 @@ import { getIngredients } from '../API/IngredientAPI';
 
 const windowWidth = Dimensions.get('window').width;
 const numberOfItems = 25;
-const ingredients = [
-    // {id: 1, name: 'Lorem', img_url: 'https://picsum.photos/200/200', aisle:'something or the other'},
-    // {id: 2, name: 'Ipsum', img_url: 'https://picsum.photos/201/201', aisle:'something or the other'},
-];
+const ingredients = [];
+let searchTimer = setTimeout(()=>{}, 0);
 
 export function IngredientScreen({ navigation }) {
   const [searchText, setSearchText] = useState("");
@@ -31,7 +29,6 @@ export function IngredientScreen({ navigation }) {
 
     const updatedIngredients = [... new Set(
       ingredients.filter(function(item) {
-        // console.log(item.name," - ",text," = ",item.name.startsWith(text));
         return item.name.startsWith(text);
       })
     )];
@@ -43,13 +40,34 @@ export function IngredientScreen({ navigation }) {
   
   const updateSearch = (text) => {
     setSearchText(text);
-    getIngredients(text, numberOfItems, offset, responseHandler);
-    // console.log("Search Text = ", text);
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      setOffet(0);
+      getIngredients(text, numberOfItems, 0, responseHandler);
+    }, 1000);
   };
 
   useEffect(() => {
     getIngredients(searchText, numberOfItems, offset, responseHandler);
   }, []);
+
+  const renderItem = ({item}) => (
+    <View style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}>
+      <TouchableOpacity onPress={() => navigation.navigate('IngredientDetailsScreen', {itemID: item.id})}> 
+        <Card style={{flex: 1}}>
+          <View style={{flex:1, flexDirection: "row"}}>
+          <Image style={{flex:2, resizeMode:"contain"}} source={{uri: item.img_url}}/>
+              <View style={{flex:1, flexDirection: "column"}}>
+                  <Card.Title>{item.name}</Card.Title>
+                  <Card.Divider/>
+                  <Text style={{paddingHorizontal:12, fontWeight: "500", flex:1}}>Product Type</Text>
+                  <Text style={{padding:12, flex:1, numberOfLines:2, ellipsizeMode:'tail'}}>{item.aisle}</Text>
+              </View>
+          </View>
+        </Card>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
       <View style={{flex:1}}>
@@ -61,26 +79,7 @@ export function IngredientScreen({ navigation }) {
           data={ingredientData}
           numColumns = {windowWidth > 600 ? (windowWidth > 900 ? 3 : 2) : 1}
           keyExtractor = {item => item.id}
-          renderItem = {
-            ({item}) => 
-            <TouchableOpacity
-              style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}
-              onPress={() => navigation.navigate('IngredientDetailsScreen', {itemID: item.id})}> 
-              <View>
-                <Card style={{flex: 1}}>
-                  <View style={{flex:1, flexDirection: "row"}}>
-                  <Image style={{flex:2, resizeMode:"contain"}} source={{uri: item.img_url}}/>
-                      <View style={{flex:1, flexDirection: "column"}}>
-                          <Card.Title>{item.name}</Card.Title>
-                          <Card.Divider/>
-                          <Text style={{paddingHorizontal:12, fontWeight: "500", flex:1}}>Product Type</Text>
-                          <Text style={{padding:12, flex:1, numberOfLines:2, ellipsizeMode:'tail'}}>{item.aisle}</Text>
-                      </View>
-                  </View>
-                </Card>
-              </View>
-            </TouchableOpacity>
-          }
+          renderItem = {renderItem}
           onEndReached = {(distanceFromEnd) =>
             getIngredients(searchText, numberOfItems, offset, responseHandler)
           }
