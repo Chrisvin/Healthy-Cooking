@@ -51,7 +51,7 @@ export function RecipeScreen({ navigation }) {
     getRecipes(searchText, numberOfItems, offset, responseHandler);
   }, []);
 
-  const renderItem = ({item}) => (({item}) => 
+  const renderItem = ({item}) => (
     <View style={{width: windowWidth > 600 ? (windowWidth > 900 ? "33%" : "50%") : "100%"}}>
       <TouchableOpacity onPress={() => navigation.navigate('RecipeDetailsScreen', {itemID: item.id})}> 
         <Card style={{flex: 1}}>
