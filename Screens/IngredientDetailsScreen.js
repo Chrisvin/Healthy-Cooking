@@ -1,3 +1,7 @@
+/**
+ * To be made by Kush Bajpai - 2020mt93731@wilp.bits-pilani.ac.in
+ */
+
 import * as React from 'react';
 import  { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';

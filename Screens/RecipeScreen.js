@@ -1,3 +1,7 @@
+/**
+ * Made by Chrisvin Jem Peniel - 2020mt12033@wilp.bits-pilani.ac.in
+ */
+
 import * as React from 'react';
 import  { useState, useEffect } from 'react';
 import { Text, FlatList, View, Image, Dimensions, TouchableOpacity } from 'react-native';
