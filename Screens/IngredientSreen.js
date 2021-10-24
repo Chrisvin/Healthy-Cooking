@@ -17,21 +17,21 @@ export function IngredientScreen({ navigation }) {
   const responseHandler = (responseJson, text) => {
     setOffet(offset + responseJson.results.length);
     for (let i=0; i<responseJson.results.length; i++) {
-      ingredients.push({
-        id: responseJson.results[i].id,
-        name:responseJson.results[i].name,
-        img_url:`https://spoonacular.com/cdn/ingredients_250x250/`+responseJson.results[i].image,
-        aisle:responseJson.results[i].aisle
-      });
+      if (ingredients.findIndex((item) => item.id===responseJson.results[i].id) == -1) {
+        ingredients.push({
+          id: responseJson.results[i].id,
+          name:responseJson.results[i].name,
+          img_url:`https://spoonacular.com/cdn/ingredients_250x250/`+responseJson.results[i].image,
+          aisle:responseJson.results[i].aisle
+        });
+      }
     }
     
     console.log("Original Ingredient List:", ingredients);
 
-    const updatedIngredients = [... new Set(
-      ingredients.filter(function(item) {
-        return item.name.startsWith(text);
-      })
-    )];
+    const updatedIngredients = ingredients.filter(function(item) {
+      return item.name.startsWith(text);
+    });
 
     console.log("Filtered Ingredient List:", updatedIngredients);
     

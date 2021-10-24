@@ -17,21 +17,21 @@ export function RecipeScreen({ navigation }) {
   const responseHandler = (responseJson, text) => {
     setOffet(offset + responseJson.results.length);
     for (let i=0; i<responseJson.results.length; i++) {
-      recipes.push({
-        id: responseJson.results[i].id,
-        name:responseJson.results[i].title,
-        img_url:responseJson.results[i].image,
-        recipe_information:responseJson.results[i].summary
-      });
+      if (recipes.findIndex((item) => item.id===responseJson.results[i].id) == -1) {
+        recipes.push({
+          id: responseJson.results[i].id,
+          name:responseJson.results[i].title,
+          img_url:responseJson.results[i].image,
+          recipe_information:responseJson.results[i].summary
+        });
+      }
     }
 
     console.log("Original Recipe List:", responseJson);
 
-    const updatedRecipes = [... new Set(
-        recipes.filter(function(item) {
-        return item.name.startsWith(text);
-      })
-    )];
+    const updatedRecipes = recipes.filter(function(item) {
+      return item.name.startsWith(text);
+    });
 
     console.log("Filtered Recipe List:", updatedRecipes);
     
