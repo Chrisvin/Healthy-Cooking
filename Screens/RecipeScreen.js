@@ -59,7 +59,7 @@ export function RecipeScreen({ navigation }) {
             <Image style={{flex:3, resizeMode:"contain"}} source={{uri: item.img_url}}/>
             <View style={{flex:3, flexDirection: "column"}}>
                 <Card.Title style={{flex:1}}>{item.name}</Card.Title>
-                <Text style={{flex:2, paddingHorizontal:8}} numberOfLines={4} ellipsizeMod={'tail'}>{item.recipe_information}</Text>
+                <Text style={{flex:2, paddingHorizontal:8}} numberOfLines={4} ellipsizeMod={'tail'}>{item.recipe_information.replace(/<\/?[^>]+(>|$)/g, "")}</Text>
             </View>
             </View>
         </Card>
